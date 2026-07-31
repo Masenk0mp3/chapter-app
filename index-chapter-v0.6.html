@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8f4ed">
+<title>Chapter v0.6</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+:root{--cream:#f8f4ed;--card:#fffdfa;--ink:#17202a;--muted:#74787e;--accent:#585ad2;--soft:#ecebfd;--line:#e6dfd5;--danger:#b44c4c;--shadow:0 15px 34px rgba(75,63,49,.09),0 2px 7px rgba(75,63,49,.06)}
+*{box-sizing:border-box}
+html,body{margin:0;min-width:320px;background:#ece9e3;font-family:"DM Sans",system-ui,sans-serif;color:var(--ink)}
+body{display:flex;justify-content:center}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{width:min(100%,520px);min-height:100vh;background:linear-gradient(rgba(255,255,255,.18),rgba(255,255,255,.18)),repeating-linear-gradient(0deg,rgba(85,68,49,.014) 0,rgba(85,68,49,.014) 1px,transparent 1px,transparent 4px),var(--cream);position:relative;padding:env(safe-area-inset-top) 14px calc(112px + env(safe-area-inset-bottom))}
+.topbar{height:82px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 4px 0}
+.wordmark{font-size:15px;letter-spacing:.42em;font-weight:600}
+.avatar,.iconbtn{border:0;background:transparent}
+.avatar{display:flex;align-items:center;gap:8px}
+.avatar b{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#f1ece4;border:1px solid #ddd5cb;font-family:"Playfair Display";font-size:24px;font-weight:500}
+.iconbtn{justify-self:end}
+.content,.page{display:grid;gap:14px}
+h1,h2{font-family:"Playfair Display",serif;font-weight:500}
+.intro,.pageTitle{padding:8px}
+.intro h1,.pageTitle h1{margin:0;font-size:clamp(34px,8.5vw,46px);letter-spacing:-.035em}
+.intro p,.pageTitle p{margin:7px 0 0;color:var(--muted);font-size:17px}
+.eyebrow{color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.16em}
+.card{background:rgba(255,253,250,.96);border:1px solid rgba(205,196,184,.52);border-radius:27px;box-shadow:var(--shadow)}
+.reading{min-height:325px;padding:24px;display:grid;grid-template-columns:minmax(130px,42%) 1fr;gap:22px;position:relative;overflow:hidden}
+.reading img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:14px;box-shadow:0 18px 24px rgba(20,20,20,.25)}
+.readingInfo{display:flex;flex-direction:column;justify-content:center}
+.pill{align-self:flex-start;background:var(--soft);color:var(--accent);font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px}
+.readingInfo h2{font-size:39px;margin:12px 0 1px}.author,.pages{color:var(--muted);margin:0}.author{font-size:18px}
+.pct{font-family:"Playfair Display";font-size:48px;color:var(--accent);margin-top:14px;line-height:1}.pct span{font-size:25px;margin-left:5px}
+.pages{font-size:14px;margin-top:6px}.track,.goal{height:7px;background:#e6e3df;border-radius:99px;overflow:hidden}.track{margin:14px 0 20px}.track span,.goal i{display:block;height:100%;background:linear-gradient(90deg,#5557ce,#696de0);border-radius:inherit}
+.primary,.secondary,.dangerBtn{border:0;border-radius:18px;padding:15px 17px;display:flex;align-items:center;justify-content:center;gap:8px}
+.primary{background:linear-gradient(135deg,#4f52c4,#5d61da);color:white;box-shadow:0 10px 20px rgba(81,83,196,.22)}
+.secondary{background:var(--soft);color:var(--accent)}
+.dangerBtn{background:#f9e8e8;color:var(--danger)}
+.chapter{min-height:208px;display:grid;grid-template-columns:24% 26% 1fr;overflow:hidden}.chapterArt{background:linear-gradient(145deg,#f6ead7,#e8ddca);position:relative}.arch{position:absolute;width:72%;height:76%;left:14%;top:14%;border-radius:60px 60px 8px 8px;background:linear-gradient(145deg,#887964,#d7cbb9 50%,#fff8ec)}
+.chapterMain{padding:25px 8px 20px 20px}.chapterMain h2{font-size:49px;line-height:1;margin:10px 0 17px}.chapterMain strong{font-size:13px}.goal{margin-top:14px}.goal i{width:40%}
+.stats,.profileStats{display:grid;grid-template-columns:repeat(3,1fr);align-items:center}.stats{padding:24px 18px 24px 0}.stat{display:flex;flex-direction:column;align-items:center;gap:6px;border-left:1px solid var(--line)}.stat:first-child{border-left:0}.stat strong{font-family:"Playfair Display";font-size:25px;font-weight:500}.stat span{font-size:12px;color:var(--muted)}
+.library{padding:18px 16px}.sectionHead{display:flex;align-items:center;justify-content:space-between;margin:0 4px 14px}.sectionHead h2{font-size:24px;margin:0}.sectionHead button,.sectionHead span{border:0;background:transparent;color:var(--muted)}
+.bookGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.book{border:0;padding:0;background:transparent}.book img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:9px;box-shadow:0 8px 12px rgba(45,39,32,.16);display:block}
+.quote{min-height:132px;padding:22px 25px;display:grid;grid-template-columns:auto 1fr 110px;align-items:center;background:linear-gradient(110deg,#f8f5fb,#f7f1ea)}.quoteMark{font-family:Georgia;font-size:68px;color:var(--accent);line-height:.8;margin-right:18px}.quote p{font-family:"Playfair Display";font-size:19px;margin:0 0 11px;line-height:1.35}.quote span{color:var(--accent);font-size:13px}.chair{font-size:82px;color:#5e61c9}
+.bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,520px);height:92px;padding:12px 17px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 74px 1fr 1fr;align-items:end;background:rgba(255,253,249,.94);border-top:1px solid #e7e1d8;backdrop-filter:blur(18px)}
+.bottom button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#687079}.bottom button.active{color:var(--accent);font-weight:600}.bottom .add{width:72px;height:72px;border-radius:50%;align-self:center;justify-self:center;margin-top:-40px;background:linear-gradient(145deg,#4d50c6,#6166df);color:white;display:grid;place-items:center;box-shadow:0 12px 22px rgba(75,78,187,.34);font-size:36px}
+.search{display:flex;align-items:center;gap:10px;background:#fffdfa;border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}.search input{border:0;outline:none;background:transparent;width:100%}
+.searchActions{display:grid;grid-template-columns:1fr auto;gap:10px}.searchActions .search{box-shadow:none}.searchBtn{border:0;border-radius:16px;background:var(--accent);color:white;padding:0 18px}
+.statusLine{min-height:24px;color:var(--muted);font-size:13px;padding:0 4px}
+.feature{background:linear-gradient(135deg,#2b2f44,#5d61cf);color:white;border-radius:27px;padding:20px;display:grid;grid-template-columns:1fr 110px;align-items:center;overflow:hidden}.feature h2{font-size:28px;margin:8px 0}.feature p{margin:0;opacity:.8}.feature img{width:100%;border-radius:12px;transform:rotate(5deg);box-shadow:0 14px 24px rgba(0,0,0,.28)}
+.filters{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.filters button{border:1px solid var(--line);background:#fffdfa;border-radius:999px;padding:9px 14px;white-space:nowrap}.filters .sel{background:var(--accent);color:white;border-color:var(--accent)}
+.catalog{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.catalogCard{border:0;background:transparent;text-align:left;padding:0;display:flex;flex-direction:column}.catalogCard img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.16)}.catalogCard strong{margin-top:9px;font-size:14px}.catalogCard span{font-size:12px;color:var(--muted)}
+.resultCard{display:grid;grid-template-columns:82px 1fr;gap:14px;padding:14px;border-bottom:1px solid var(--line)}.resultCard:last-child{border-bottom:0}.resultCard img{width:82px;aspect-ratio:2/3;object-fit:cover;border-radius:9px;background:#eee}.resultCard h3{margin:2px 0 4px;font-size:17px}.resultCard p{margin:0 0 8px;color:var(--muted);font-size:13px}.resultActions{display:flex;gap:8px;flex-wrap:wrap}.mini{border:0;border-radius:999px;background:var(--soft);color:var(--accent);padding:8px 11px;font-size:12px}.mini.primaryMini{background:var(--accent);color:white}
+.empty{padding:36px 18px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);font-family:"Playfair Display";font-size:25px;margin-bottom:8px}
+.profileHero{text-align:center;padding:18px 10px 8px}.profileAvatar{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(145deg,#4f52c4,#7779e0);color:white;display:grid;place-items:center;font-family:"Playfair Display";font-size:42px}.profileHero h1{font-size:48px;margin:6px 0}.profileHero p{color:var(--muted)}
+.profileStats,.profileCard,.settings{padding:22px}.settings button{width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:18px;display:flex;justify-content:space-between}.settings button:first-child{border-top:0}
+.detailTop{height:80px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}.detailTop button{border:0;background:white;border-radius:50%;width:42px;height:42px}.detailTop button:last-child{justify-self:end}.detailTop span{letter-spacing:.32em;font-weight:600;font-size:13px}
+.detailHero{text-align:center}.detailHero img{width:44%;max-width:190px;aspect-ratio:2/3;object-fit:cover;border-radius:16px;box-shadow:0 18px 30px rgba(0,0,0,.22)}.detailHero h1{font-size:42px;margin:8px}.detailHero p{color:var(--muted)}
+.detailCard{padding:22px;margin-top:14px}.detailMeta{display:grid;grid-template-columns:repeat(3,1fr)}.detailMeta div{text-align:center;border-left:1px solid var(--line)}.detailMeta div:first-child{border-left:0}
+.formGrid{display:grid;gap:13px}.field{display:grid;gap:6px}.field label{font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;outline:none}.field textarea{min-height:90px;resize:vertical}.actionGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheetBg{position:fixed;z-index:40;inset:0;background:rgba(19,22,27,.28);display:flex;justify-content:center;align-items:flex-end;backdrop-filter:blur(3px)}.sheet{width:min(100%,520px);background:#fffdf9;border-radius:28px 28px 0 0;padding:20px 20px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px rgba(0,0,0,.18)}.sheet button{width:100%;border:0;background:transparent;border-top:1px solid var(--line);padding:18px 6px;text-align:left}.sheet h2{font-size:31px;margin:6px 0 14px}
+.toast{position:fixed;z-index:60;left:50%;bottom:108px;transform:translateX(-50%);background:#1d2530;color:white;padding:12px 16px;border-radius:14px;white-space:nowrap}.hidden{display:none!important}
+@media(max-width:430px){.app{padding-left:12px;padding-right:12px}.reading{grid-template-columns:40% 1fr;gap:15px;padding:18px;min-height:300px}.readingInfo h2{font-size:32px}.pct{font-size:40px}.primary{padding:14px 12px;font-size:14px}.chapter{grid-template-columns:25% 27% 1fr}.chapterMain{padding-left:14px}.chapterMain h2{font-size:42px}.bookGrid{gap:8px}}
+
+.authorGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.authorCard{border:0;background:linear-gradient(145deg,#fffdfa,#f3edf9);border-radius:22px;padding:18px;text-align:left;box-shadow:var(--shadow);border:1px solid var(--line)}
+.authorAvatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#5557ce,#7b7de1);color:white;font-family:"Playfair Display";font-size:27px;margin-bottom:13px}
+.authorCard strong{display:block;font-family:"Playfair Display";font-size:20px;font-weight:500}.authorCard span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.authorHero{text-align:center;padding:10px 12px 20px}.authorHero .authorAvatar{width:100px;height:100px;font-size:44px;margin:0 auto 16px}.authorHero h1{font-size:42px;margin:7px 0}.authorHero p{color:var(--muted);margin:0}
+.bio{line-height:1.6;color:#4e5359}.worksRow{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.workMini{border:0;background:transparent;padding:0;text-align:left}.workMini img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#eee}.workMini strong{display:block;font-size:11px;margin-top:6px}
+.unlockBg{position:fixed;z-index:80;inset:0;background:rgba(19,22,27,.42);display:flex;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(5px)}
+.unlockCard{width:min(100%,420px);background:linear-gradient(145deg,#fffdfa,#f2ecfb);border-radius:30px;padding:28px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}
+.unlockSpark{font-size:38px}.unlockCard h2{font-size:34px;margin:9px 0}.unlockCard p{color:var(--muted);line-height:1.5}.unlockCard .authorAvatar{margin:12px auto}
+
+
+.authGate{position:fixed;z-index:120;inset:0;background:linear-gradient(180deg,#f8f4ed,#f1ece4);display:flex;align-items:center;justify-content:center;padding:22px}.authCard{width:min(100%,430px);background:rgba(255,253,250,.98);border:1px solid var(--line);border-radius:32px;padding:28px;box-shadow:0 25px 70px rgba(56,47,38,.18)}.authLogo{text-align:center;margin-bottom:22px}.authLogo .mark{width:76px;height:76px;border-radius:24px;margin:0 auto 14px;display:grid;place-items:center;background:linear-gradient(145deg,#4f52c4,#7074e0);color:#fff;font-family:"Playfair Display";font-size:40px}.authLogo h1{margin:0;font-size:42px}.authLogo p{color:var(--muted);margin:7px 0 0}.authTabs{display:grid;grid-template-columns:1fr 1fr;background:#efebe5;border-radius:14px;padding:4px;margin-bottom:18px}.authTabs button{border:0;background:transparent;border-radius:11px;padding:11px}.authTabs button.active{background:white;box-shadow:0 3px 8px rgba(0,0,0,.07);color:var(--accent);font-weight:600}.authForm{display:grid;gap:12px}.authForm input{width:100%;border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;outline:none}.authForm .primary{width:100%}.authMessage{min-height:22px;font-size:13px;color:var(--muted);text-align:center}.authMessage.error{color:var(--danger)}.syncBadge{position:fixed;z-index:30;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:rgba(31,38,48,.9);color:white;padding:7px 11px;border-radius:999px;font-size:11px}.accountRow{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}.accountRow b{flex:1}.accountRow span{color:var(--muted);font-size:13px}.offlineNote{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.4}
+
+.profileEditorBg{position:fixed;z-index:140;inset:0;background:rgba(20,23,29,.42);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.profileEditor{width:min(100%,430px);max-height:92vh;overflow:auto;background:#fffdfa;border-radius:30px;padding:26px;box-shadow:0 28px 75px rgba(0,0,0,.26)}
+.profileEditor h2{font-size:34px;margin:8px 0 6px}.profileEditor>p{color:var(--muted);margin:0 0 20px;line-height:1.45}
+.profileEditorForm{display:grid;gap:14px}.profileEditorForm input,.profileEditorForm textarea{width:100%;border:1px solid var(--line);background:white;border-radius:15px;padding:14px;outline:none}
+.profileEditorForm textarea{min-height:90px;resize:vertical}.profileEditorForm small{color:var(--muted);line-height:1.35}
+.usernameWrap{position:relative}.usernameWrap input{padding-left:32px}.usernameWrap:before{content:"@";position:absolute;left:14px;top:14px;color:var(--muted)}
+.usernameState{font-size:12px;min-height:18px}.usernameState.ok{color:#23845a}.usernameState.bad{color:var(--danger)}
+.profileEditorActions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.profileEditorActions button{width:100%}
+.onboardingBadge{width:66px;height:66px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#4f52c4,#7377e0);color:#fff;font-family:"Playfair Display";font-size:34px;margin-bottom:14px}
+
+
+.authorAppleHero{position:relative;overflow:hidden;border-radius:30px;padding:30px 20px 24px;text-align:center;background:linear-gradient(160deg,#f1ebfb,#fffaf1);border:1px solid var(--line);box-shadow:var(--shadow)}
+.authorAppleBlur{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(28px);opacity:.18;transform:scale(1.15)}
+.authorAppleContent{position:relative}.authorPortrait{width:118px;height:118px;border-radius:50%;margin:0 auto 16px;object-fit:cover;background:linear-gradient(145deg,#5557ce,#7b7de1);border:5px solid rgba(255,255,255,.82);box-shadow:0 16px 35px rgba(36,38,65,.2)}
+.authorPortraitFallback{display:grid;place-items:center;color:#fff;font-family:"Playfair Display";font-size:52px}
+.authorAppleHero h1{font-size:42px;line-height:1.05;margin:8px 0 8px}.authorAppleHero .descriptor{color:var(--muted);font-size:15px;margin:0 auto;max-width:310px}
+.authorFacts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.authorFact{background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.8);border-radius:17px;padding:13px 7px;backdrop-filter:blur(12px)}.authorFact strong{display:block;font-size:12px}.authorFact span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.bioApple{padding:23px}.bioApple h2{font-size:27px;margin:5px 0 14px}.bioApple p{font-size:16px;line-height:1.65;margin:0;color:#4e5359}.bioClamp{display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden}.textButton{border:0;background:transparent;color:var(--accent);font-weight:600;padding:13px 0 0}
+.sourceNote{font-size:11px!important;color:#9a9da2!important;margin-top:13px!important}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div id="authGate" class="authGate"><section class="authCard"><div class="authLogo"><div class="mark">C</div><span class="eyebrow">CHAPTER</span><h1>Votre histoire de lecteur</h1><p>Créez un compte pour retrouver votre bibliothèque partout.</p></div><div class="authTabs"><button id="loginTab" class="active">Se connecter</button><button id="signupTab">Créer un compte</button></div><form id="authForm" class="authForm"><input id="displayNameInput" class="hidden" type="text" placeholder="Votre prénom ou pseudo" autocomplete="nickname"><input id="emailInput" type="email" placeholder="Adresse e-mail" autocomplete="email" required><input id="passwordInput" type="password" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password" minlength="6" required><button class="primary" id="authSubmit" type="submit">Se connecter</button><div id="authMessage" class="authMessage"></div></form><p class="offlineNote">Tes livres seront sauvegardés dans ton compte Chapter.</p></section></div><div id="syncBadge" class="syncBadge hidden">Synchronisation…</div>
+
+<div id="profileEditorBg" class="profileEditorBg hidden">
+  <section class="profileEditor">
+    <div class="onboardingBadge">C</div>
+    <span class="eyebrow" id="profileEditorEyebrow">MON PROFIL</span>
+    <h2 id="profileEditorTitle">Créer votre profil</h2>
+    <p id="profileEditorText">Choisissez le nom que vos amis verront sur Chapter.</p>
+    <form id="profileEditorForm" class="profileEditorForm">
+      <div class="field"><label>Nom affiché</label><input id="profileDisplayName" maxlength="40" placeholder="Masenk0" required></div>
+      <div class="field"><label>Pseudo unique</label><div class="usernameWrap"><input id="profileUsername" maxlength="24" placeholder="masenk0" required></div><div id="usernameState" class="usernameState"></div><small>3 à 24 caractères : lettres, chiffres et tiret bas.</small></div>
+      <div class="field"><label>Bio</label><textarea id="profileBio" maxlength="160" placeholder="Quelques mots sur vos lectures…"></textarea></div>
+      <div class="profileEditorActions"><button type="button" class="secondary" id="profileEditorCancel">Annuler</button><button type="submit" class="primary" id="profileEditorSave">Enregistrer</button></div>
+      <div id="profileEditorMessage" class="authMessage"></div>
+    </form>
+  </section>
+</div>
+
+<div class="app">
+<header class="topbar" id="appHeader"><button class="avatar"><b>C</b>⌄</button><div class="wordmark">CHAPTER</div><button class="iconbtn">🔔</button></header>
+<main id="appScreen"></main>
+<nav class="bottom" id="appBottom">
+<button data-tab="today" class="active">⌂<span>Aujourd’hui</span></button>
+<button data-tab="explore">⌕<span>Explorer</span></button>
+<button class="add" id="addBtn">＋</button>
+<button data-tab="library">▥<span>Bibliothèque</span></button>
+<button data-tab="profile">◯<span>Profil</span></button>
+</nav>
+</div>
+<div id="addSheet" class="sheetBg hidden"><section class="sheet"><span class="eyebrow">NOUVEAU</span><h2>Ajouter un livre</h2><button data-add-action="search">🔍 Rechercher un livre</button><button data-add-action="manual">✎ Ajouter manuellement</button><button data-add-action="close">Fermer</button></section></div>
+
+<div id="unlockModal" class="unlockBg hidden">
+  <section class="unlockCard">
+    <div class="unlockSpark">✨</div>
+    <span class="eyebrow">NOUVEL AUTEUR DÉCOUVERT</span>
+    <div class="authorAvatar" id="unlockAvatar">A</div>
+    <h2 id="unlockName">Auteur</h2>
+    <p>Votre histoire de lecteur compte désormais un nouvel auteur.</p>
+    <button class="primary" id="unlockDiscover">Découvrir sa vie</button>
+    <button class="secondary" id="unlockClose" style="width:100%;margin-top:10px">Continuer</button>
+  </section>
+</div>
+
+<div id="toastBox" class="toast hidden"></div>
+<script>
+const STARTER_BOOKS=[
+{id:"starter-dune",title:"Dune",author:"Frank Herbert",cover:"https://covers.openlibrary.org/b/isbn/9780441013593-L.jpg",status:"En cours",progress:72,pagesRead:312,totalPages:432,genre:"Science-fiction",rating:4.7,notes:""},
+{id:"starter-1984",title:"1984",author:"George Orwell",cover:"https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg",status:"Lu",progress:100,pagesRead:328,totalPages:328,genre:"Dystopie",rating:4.6,notes:""},
+{id:"starter-sapiens",title:"Sapiens",author:"Yuval Noah Harari",cover:"https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",status:"Lu",progress:100,pagesRead:498,totalPages:498,genre:"Essai",rating:4.4,notes:""},
+{id:"starter-etranger",title:"L'Étranger",author:"Albert Camus",cover:"https://covers.openlibrary.org/b/isbn/9782070360024-L.jpg",status:"Lu",progress:100,pagesRead:184,totalPages:184,genre:"Classique",rating:4.2,notes:""},
+{id:"starter-hobbit",title:"Le Hobbit",author:"J. R. R. Tolkien",cover:"https://covers.openlibrary.org/b/isbn/9780261102217-L.jpg",status:"À lire",progress:0,pagesRead:0,totalPages:310,genre:"Fantasy",rating:4.8,notes:""}
+];
+const QUOTES=[["Un livre est un rêve que l’on tient dans ses mains.","Neil Gaiman"],["Un lecteur vit mille vies avant de mourir.","George R. R. Martin"],["La lecture est une amitié.","Marcel Proust"],["Les livres sont une magie uniquement transportable.","Stephen King"]];
+const STORAGE_KEY="chapter-v04-library";
+const SUPABASE_URL="https://cjdoiainszabgkvjeoet.supabase.co";const SUPABASE_KEY="sb_publishable_EaCrd4MjCxzo3cTNaRfVTA_qm3ocerF";const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let currentUser=null,currentProfile=null,isSignupMode=false,profileEditorRequired=false,usernameCheckTimer=null;let library=[],tab="today",selectedId=null,selectedAuthorName=null,selectedAuthorKey=null,filter="Tous",searchResults=[],pendingUnlock=null;
+const appScreen=document.getElementById("appScreen"),appHeader=document.getElementById("appHeader"),appBottom=document.getElementById("appBottom"),addSheet=document.getElementById("addSheet"),toastBox=document.getElementById("toastBox"),unlockModal=document.getElementById("unlockModal"),authGate=document.getElementById("authGate"),syncBadge=document.getElementById("syncBadge");
+
+function localBackup(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(library))}catch(e){}}
+function localRestore(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));return Array.isArray(saved)?saved:[]}catch(e){return []}}
+function setSyncing(v,label="Synchronisation…"){syncBadge.textContent=label;syncBadge.classList.toggle("hidden",!v)}
+function dbToBook(r){return {id:r.id,openLibraryKey:r.open_library_key,authorKey:r.author_key,title:r.title,author:r.author,cover:r.cover_url||"https://placehold.co/240x360/f0ece5/777?text=Chapter",status:r.status,progress:r.progress||0,pagesRead:r.pages_read||0,totalPages:r.total_pages||0,genre:r.genre||"Non classé",rating:Number(r.rating)||0,notes:r.notes||""}}
+function bookToDb(b){return {user_id:currentUser.id,open_library_key:b.openLibraryKey||null,author_key:b.authorKey||null,title:b.title,author:b.author,cover_url:b.cover||null,status:b.status||"À lire",pages_read:Number(b.pagesRead)||0,total_pages:Number(b.totalPages)||0,progress:Number(b.progress)||0,rating:Number(b.rating)||0,genre:b.genre||null,notes:b.notes||null,updated_at:new Date().toISOString()}}
+async function loadRemoteLibrary(){if(!currentUser)return;setSyncing(true,"Chargement…");const {data,error}=await supabaseClient.from("books").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});if(error){library=localRestore();notify("Mode hors ligne") }else{library=(data||[]).map(dbToBook);localBackup()}setSyncing(false);render()}
+async function insertRemoteBook(b){setSyncing(true,"Ajout…");const {data,error}=await supabaseClient.from("books").insert(bookToDb(b)).select().single();setSyncing(false);if(error){notify("Ajout impossible");return null}const saved=dbToBook(data);library=library.map(x=>x.id===b.id?saved:x);localBackup();return saved}
+async function updateRemoteBook(b){setSyncing(true,"Enregistrement…");const {data,error}=await supabaseClient.from("books").update(bookToDb(b)).eq("id",b.id).eq("user_id",currentUser.id).select().single();setSyncing(false);if(error){notify("Enregistrement impossible");return false}Object.assign(b,dbToBook(data));localBackup();return true}
+async function deleteRemoteBook(id){setSyncing(true,"Suppression…");const {error}=await supabaseClient.from("books").delete().eq("id",id).eq("user_id",currentUser.id);setSyncing(false);if(error){notify("Suppression impossible");return false}library=library.filter(x=>x.id!==id);localBackup();return true}
+function notify(m){toastBox.textContent=m;toastBox.classList.remove("hidden");clearTimeout(window.chapterToast);window.chapterToast=setTimeout(()=>toastBox.classList.add("hidden"),1800)}
+
+
+async function ensureProfile(user,name="Lecteur"){
+ const {data,error}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
+ if(error)console.error("profile select",error);
+ if(data){currentProfile=data;return data}
+ const fallback=("reader_"+user.id.slice(0,8)).toLowerCase();
+ const payload={id:user.id,username:fallback,display_name:name||"Lecteur",bio:""};
+ const {data:created,error:createError}=await supabaseClient.from("profiles").upsert(payload,{onConflict:"id"}).select().single();
+ if(createError){console.error("profile create",createError);currentProfile=payload;return payload}
+ currentProfile=created;return created
+}
+function profileNeedsSetup(profile){
+ if(!profile)return true;
+ const u=(profile.username||"").toLowerCase(),d=(profile.display_name||"").toLowerCase();
+ return !u||u==="reader"||u.startsWith("reader_")||!d||d==="lecteur";
+}
+function setAuthMode(signup){
+ isSignupMode=signup;loginTab.classList.toggle("active",!signup);signupTab.classList.toggle("active",signup);
+ displayNameInput.classList.toggle("hidden",!signup);authSubmit.textContent=signup?"Créer mon compte":"Se connecter";
+ authMessage.className="authMessage";authMessage.textContent="";
+}
+loginTab.onclick=()=>setAuthMode(false);signupTab.onclick=()=>setAuthMode(true);
+authForm.onsubmit=async e=>{
+ e.preventDefault();authMessage.className="authMessage";authMessage.textContent=isSignupMode?"Création du compte…":"Connexion…";
+ const email=emailInput.value.trim(),password=passwordInput.value,name=displayNameInput.value.trim();
+ const result=isSignupMode?await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name||"Lecteur"},emailRedirectTo:window.location.origin}}):await supabaseClient.auth.signInWithPassword({email,password});
+ if(result.error){authMessage.className="authMessage error";authMessage.textContent=result.error.message;return}
+ if(isSignupMode&&!result.data.session){authMessage.textContent="Compte créé. Vérifie ton e-mail, puis reconnecte-toi."}
+};
+async function handleSession(session){
+ currentUser=session&&session.user||null;
+ if(!currentUser){currentProfile=null;library=[];authGate.classList.remove("hidden");render();return}
+ authGate.classList.add("hidden");
+ await ensureProfile(currentUser,currentUser.user_metadata&&currentUser.user_metadata.display_name);
+ await loadRemoteLibrary();
+ if(profileNeedsSetup(currentProfile))setTimeout(()=>openProfileEditor(true),250)
+}
+async function logout(){await supabaseClient.auth.signOut()}
+
+function authorInitial(name="Auteur"){return name.trim().charAt(0).toUpperCase()||"A"}
+function authorsDiscovered(){
+ const map=new Map();
+ library.forEach(b=>{
+   const key=(b.author||"Auteur inconnu").toLowerCase();
+   if(!map.has(key))map.set(key,{name:b.author||"Auteur inconnu",authorKey:b.authorKey||null,count:0});
+   const a=map.get(key);a.count++;if(!a.authorKey&&b.authorKey)a.authorKey=b.authorKey;
+ });
+ return [...map.values()];
+}
+function showAuthorUnlock(authorName,authorKey){
+ pendingUnlock={name:authorName,key:authorKey||null};
+ document.getElementById("unlockName").textContent=authorName;
+ document.getElementById("unlockAvatar").textContent=authorInitial(authorName);
+ unlockModal.classList.remove("hidden");
+}
+document.getElementById("unlockClose").onclick=()=>unlockModal.classList.add("hidden");
+document.getElementById("unlockDiscover").onclick=()=>{unlockModal.classList.add("hidden");selectedAuthorName=pendingUnlock.name;selectedAuthorKey=pendingUnlock.key;pendingUnlock=null;render()};
+
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function coverUrl(item){return item.cover_i?`https://covers.openlibrary.org/b/id/${item.cover_i}-M.jpg`:"https://placehold.co/240x360/f0ece5/777?text=Sans+couverture"}
+function currentBook(){return library.find(b=>b.status==="En cours")||library[0]}
+function tile(b){return `<button class="book" data-book-id="${esc(b.id)}"><img src="${esc(b.cover)}" alt="${esc(b.title)}"></button>`}
+function cat(b){return `<button class="catalogCard" data-book-id="${esc(b.id)}"><img src="${esc(b.cover)}" alt="${esc(b.title)}"><strong>${esc(b.title)}</strong><span>${esc(b.author)}</span></button>`}
+function bindBookButtons(){document.querySelectorAll("[data-book-id]").forEach(x=>x.onclick=()=>{selectedId=x.dataset.bookId;render()})}
+
+function renderToday(){
+ const b=currentBook(),q=QUOTES[new Date().getDate()%QUOTES.length];
+ if(!b){appScreen.innerHTML=`<div class="content"><section class="intro"><h1>Bonjour, ${esc((currentProfile&&currentProfile.display_name)||"Lecteur")} 👋</h1><p>Votre prochaine page vous attend.</p></section><section class="card empty"><b>Votre bibliothèque est vide</b>Appuyez sur le bouton + pour rechercher votre premier livre.</section></div>`;return}
+ const read=Math.min(b.totalPages||0,b.pagesRead||0),pct=b.progress||0;
+ appScreen.innerHTML=`<div class="content">
+ <section class="intro"><h1>Bonjour, ${esc((currentProfile&&currentProfile.display_name)||"Lecteur")} 👋</h1><p>Votre prochaine page vous attend.</p></section>
+ <section class="card reading"><img src="${esc(b.cover)}" data-book-id="${esc(b.id)}"><div class="readingInfo"><span class="pill">${esc((b.status||"En cours").toUpperCase())}</span><h2>${esc(b.title)}</h2><p class="author">${esc(b.author)}</p><div class="pct">${pct}<span>%</span></div><p class="pages">${read} / ${b.totalPages||"?"} pages</p><div class="track"><span style="width:${pct}%"></span></div><button class="primary" id="quickProgress">Mettre à jour <span>→</span></button></div></section>
+ <section class="card chapter"><div class="chapterArt"><div class="arch"></div></div><div class="chapterMain"><span class="eyebrow">CHAPITRE I</span><h2>2026</h2><strong>${library.filter(x=>x.status==="Lu").length} / 30 livres</strong><div class="goal"><i style="width:${Math.min(100,library.filter(x=>x.status==="Lu").length/30*100)}%"></i></div></div><div class="stats"><div class="stat">📖<strong>${library.length}</strong><span>livres</span></div><div class="stat">▤<strong>${library.reduce((a,x)=>a+(Number(x.pagesRead)||0),0)}</strong><span>pages</span></div><div class="stat">◯<strong>${new Set(library.map(x=>x.author)).size}</strong><span>auteurs</span></div></div></section>
+ <section class="card library"><div class="sectionHead"><h2>Ma bibliothèque</h2><button onclick="switchTab('library')">Tout voir →</button></div><div class="bookGrid">${library.slice(0,10).map(tile).join("")}</div></section>
+ <section class="card quote"><div class="quoteMark">“</div><div><p>${q[0]}</p><span>${q[1]}</span></div><div class="chair">◒</div></section></div>`;
+ document.getElementById("quickProgress").onclick=()=>{selectedId=b.id;render()};
+ bindBookButtons()
+}
+
+function renderExplore(){
+ appScreen.innerHTML=`<div class="page">
+ <section class="pageTitle"><span class="eyebrow">DÉCOUVRIR</span><h1>Explorer</h1><p>Recherchez un vrai livre dans Open Library.</p></section>
+ <div class="searchActions"><div class="search">⌕<input id="searchInput" placeholder="Ex. Harry Potter, Tolkien…"></div><button class="searchBtn" id="searchBtn">Chercher</button></div>
+ <div class="statusLine" id="searchStatus">${searchResults.length?searchResults.length+" résultats":""}</div>
+ <section class="card library"><div id="results">${searchResults.length?searchResults.map(resultHtml).join(""):`<div class="empty"><b>Votre prochaine lecture vous attend</b>Tapez un titre ou un auteur pour commencer.</div>`}</div></section>
+ </div>`;
+ const input=document.getElementById("searchInput");
+ document.getElementById("searchBtn").onclick=()=>searchOpenLibrary(input.value);
+ input.onkeydown=e=>{if(e.key==="Enter")searchOpenLibrary(input.value)};
+ bindResultButtons()
+}
+
+function resultHtml(r){
+ const author=(r.author_name&&r.author_name[0])||"Auteur inconnu";
+ const pages=(r.number_of_pages_median||0);
+ const inLibrary=library.some(b=>b.openLibraryKey===r.key);
+ return `<article class="resultCard"><img src="${coverUrl(r)}" alt="${esc(r.title)}"><div><h3>${esc(r.title||"Sans titre")}</h3><p>${esc(author)}${r.first_publish_year?" • "+r.first_publish_year:""}</p><div class="resultActions">${inLibrary?`<button class="mini" disabled>Déjà ajouté</button>`:`<button class="mini primaryMini" data-add-result="${esc(r.key)}" data-status="À lire">+ À lire</button><button class="mini" data-add-result="${esc(r.key)}" data-status="En cours">En cours</button><button class="mini" data-add-result="${esc(r.key)}" data-status="Lu">Lu</button>`}</div></div></article>`
+}
+function bindResultButtons(){document.querySelectorAll("[data-add-result]").forEach(btn=>btn.onclick=()=>addSearchResult(btn.dataset.addResult,btn.dataset.status))}
+async function searchOpenLibrary(query){
+ query=query.trim();if(!query){notify("Écris un titre ou un auteur");return}
+ const status=document.getElementById("searchStatus"),results=document.getElementById("results");status.textContent="Recherche en cours…";results.innerHTML=`<div class="empty">Chargement…</div>`;
+ try{
+  const url=`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&lang=fr&limit=12&fields=key,title,author_name,author_key,first_publish_year,cover_i,number_of_pages_median,subject`;
+  const res=await fetch(url);if(!res.ok)throw new Error("Erreur réseau");
+  const data=await res.json();searchResults=(data.docs||[]).slice(0,12);status.textContent=`${searchResults.length} résultat${searchResults.length>1?"s":""}`;results.innerHTML=searchResults.length?searchResults.map(resultHtml).join(""):`<div class="empty"><b>Aucun résultat</b>Essayez un autre titre ou auteur.</div>`;bindResultButtons()
+ }catch(e){status.textContent="Recherche indisponible";results.innerHTML=`<div class="empty"><b>Impossible de contacter Open Library</b>Réessayez dans quelques secondes.</div>`}
+}
+async function addSearchResult(key,status){const r=searchResults.find(x=>x.key===key);if(!r)return;const total=Number(r.number_of_pages_median)||0,author=(r.author_name&&r.author_name[0])||"Auteur inconnu",wasKnown=library.some(x=>(x.author||"").toLowerCase()===author.toLowerCase()),authorKey=(r.author_key&&r.author_key[0])||null;const b={id:"temp-"+Date.now(),openLibraryKey:key,title:r.title||"Sans titre",author,authorKey,cover:coverUrl(r),status,progress:status==="Lu"?100:0,pagesRead:status==="Lu"?total:0,totalPages:total,genre:(r.subject&&r.subject[0])||"Non classé",rating:0,notes:""};library.unshift(b);renderExplore();const saved=await insertRemoteBook(b);if(!saved){library=library.filter(x=>x.id!==b.id);renderExplore();return}notify(`${saved.title} ajouté`);renderExplore();if(!wasKnown)setTimeout(()=>showAuthorUnlock(author,authorKey),250)}
+
+function renderLibrary(){
+ const list=filter==="Tous"?library:library.filter(b=>b.status===filter);
+ appScreen.innerHTML=`<div class="page"><section class="pageTitle"><span class="eyebrow">COLLECTION</span><h1>Ma bibliothèque</h1><p>${library.length} livre${library.length>1?"s":""} synchronisé${library.length>1?"s":""} avec votre compte.</p></section>
+ <div class="filters">${["Tous","En cours","Lu","À lire"].map(x=>`<button data-filter="${x}" class="${filter===x?"sel":""}">${x}</button>`).join("")}</div>
+ <section class="card library">${list.length?`<div class="catalog">${list.map(cat).join("")}</div>`:`<div class="empty"><b>Aucun livre ici</b>Ajoutez un livre ou changez de filtre.</div>`}</section></div>`;
+ document.querySelectorAll("[data-filter]").forEach(x=>x.onclick=()=>{filter=x.dataset.filter;renderLibrary()});bindBookButtons()
+}
+
+function renderProfile(){
+ appScreen.innerHTML=`<div class="page"><section class="profileHero"><div class="profileAvatar">${esc(((currentProfile&&currentProfile.display_name)||"L").charAt(0).toUpperCase())}</div><span class="eyebrow">LA BIBLIOTHÈQUE DE</span><h1>${esc((currentProfile&&currentProfile.display_name)||"Lecteur")}</h1><p>@${esc((currentProfile&&currentProfile.username)||"reader")} • Chaque livre écrit votre histoire.</p></section>
+ <section class="card profileStats"><div class="stat">📖<strong>${library.length}</strong><span>livres</span></div><div class="stat">▤<strong>${library.reduce((a,x)=>a+(Number(x.pagesRead)||0),0)}</strong><span>pages</span></div><div class="stat">◯<strong>${new Set(library.map(x=>x.author)).size}</strong><span>auteurs</span></div></section>
+ <section class="card profileCard"><span class="eyebrow">CHAPITRE I</span><h2>Votre année 2026</h2><p>${library.filter(x=>x.status==="Lu").length} livres terminés sur un objectif de 30.</p><div class="goal"><i style="width:${Math.min(100,library.filter(x=>x.status==="Lu").length/30*100)}%"></i></div></section>
+ <section class="card library"><div class="sectionHead"><h2>Auteurs découverts</h2><span>${authorsDiscovered().length}</span></div><div class="authorGrid">${authorsDiscovered().map(a=>`<button class="authorCard" data-author-name="${esc(a.name)}" data-author-key="${esc(a.authorKey||"")}"><div class="authorAvatar">${authorInitial(a.name)}</div><strong>${esc(a.name)}</strong><span>${a.count} livre${a.count>1?"s":""}</span></button>`).join("")}</div></section>
+ <section class="card settings"><div class="accountRow"><b>Compte connecté</b><span>${esc(currentUser&&currentUser.email||"")}</span></div><button id="editProfileBtn"><span>Modifier mon profil</span><span>›</span></button><button id="logoutBtn"><span>Se déconnecter</span><span>›</span></button></section></div>`;
+ logoutBtn.onclick=logout;editProfileBtn.onclick=editProfile;document.querySelectorAll("[data-author-name]").forEach(x=>x.onclick=()=>{selectedAuthorName=x.dataset.authorName;selectedAuthorKey=x.dataset.authorKey||null;render()})
+}
+
+
+function cleanUsername(value){return value.trim().toLowerCase().replace(/\s+/g,"_").replace(/[^a-z0-9_]/g,"").slice(0,24)}
+async function checkUsernameAvailability(value){
+ const clean=cleanUsername(value),state=document.getElementById("usernameState");profileUsername.value=clean;
+ if(clean.length<3){state.className="usernameState bad";state.textContent="Le pseudo doit contenir au moins 3 caractères.";return false}
+ if(clean===((currentProfile&&currentProfile.username)||"")){state.className="usernameState ok";state.textContent="C’est votre pseudo actuel.";return true}
+ state.className="usernameState";state.textContent="Vérification…";
+ const {data,error}=await supabaseClient.from("profiles").select("id").eq("username",clean).limit(1);
+ if(error){console.error("username check",error);state.className="usernameState bad";state.textContent="Vérification impossible.";return false}
+ const available=!data||data.length===0;state.className="usernameState "+(available?"ok":"bad");state.textContent=available?"Pseudo disponible.":"Ce pseudo est déjà utilisé.";return available
+}
+function openProfileEditor(required=false){
+ profileEditorRequired=required;profileEditorEyebrow.textContent=required?"BIENVENUE DANS CHAPTER":"MON PROFIL";profileEditorTitle.textContent=required?"Créez votre identité":"Modifier mon profil";profileEditorText.textContent=required?"Choisissez le nom et le pseudo que vos amis verront.":"Mettez à jour les informations visibles sur votre profil.";
+ profileDisplayName.value=(currentProfile&&currentProfile.display_name&&currentProfile.display_name!=="Lecteur")?currentProfile.display_name:(currentUser&&currentUser.user_metadata&&currentUser.user_metadata.display_name)||"";
+ profileUsername.value=(currentProfile&&currentProfile.username&&!currentProfile.username.startsWith("reader_"))?currentProfile.username:"";
+ profileBio.value=(currentProfile&&currentProfile.bio)||"";profileEditorCancel.classList.toggle("hidden",required);profileEditorMessage.className="authMessage";profileEditorMessage.textContent="";usernameState.textContent="";profileEditorBg.classList.remove("hidden");setTimeout(()=>profileDisplayName.focus(),150)
+}
+function closeProfileEditor(){if(profileEditorRequired)return;profileEditorBg.classList.add("hidden")}
+profileEditorCancel.onclick=closeProfileEditor;profileEditorBg.onclick=e=>{if(e.target===profileEditorBg)closeProfileEditor()};
+profileUsername.oninput=()=>{clearTimeout(usernameCheckTimer);profileUsername.value=cleanUsername(profileUsername.value);usernameCheckTimer=setTimeout(()=>checkUsernameAvailability(profileUsername.value),400)};
+profileEditorForm.onsubmit=async e=>{
+ e.preventDefault();const displayName=profileDisplayName.value.trim(),username=cleanUsername(profileUsername.value),bio=profileBio.value.trim();profileEditorMessage.className="authMessage";profileEditorMessage.textContent="Enregistrement…";
+ if(!displayName){profileEditorMessage.className="authMessage error";profileEditorMessage.textContent="Ajoute un nom affiché.";return}
+ if(!await checkUsernameAvailability(username)){profileEditorMessage.className="authMessage error";profileEditorMessage.textContent="Choisis un autre pseudo.";return}
+ const payload={id:currentUser.id,display_name:displayName,username,bio,updated_at:new Date().toISOString()};
+ const {data,error}=await supabaseClient.from("profiles").upsert(payload,{onConflict:"id"}).select().single();
+ if(error){console.error("profile save",error);profileEditorMessage.className="authMessage error";profileEditorMessage.textContent=error.code==="23505"?"Ce pseudo vient d’être pris.":"Erreur Supabase : "+(error.message||"profil non enregistré");return}
+ currentProfile=data;profileEditorRequired=false;profileEditorBg.classList.add("hidden");notify("Profil mis à jour");renderProfile()
+}
+function editProfile(){openProfileEditor(false)}
+function renderDetail(){
+ const b=library.find(x=>x.id===selectedId);if(!b){selectedId=null;return render()}
+ appScreen.innerHTML=`<div><div class="detailTop"><button id="backBtn">‹</button><span>CHAPTER</span><button>☆</button></div>
+ <section class="detailHero"><img src="${esc(b.cover)}"><span class="eyebrow">${esc(b.genre||"LIVRE")}</span><h1>${esc(b.title)}</h1><p>${esc(b.author)}</p></section>
+ <section class="card detailCard"><div class="formGrid">
+ <div class="field"><label>Statut</label><select id="statusInput"><option ${b.status==="À lire"?"selected":""}>À lire</option><option ${b.status==="En cours"?"selected":""}>En cours</option><option ${b.status==="Lu"?"selected":""}>Lu</option></select></div>
+ <div class="field"><label>Pages lues</label><input id="pagesInput" type="number" min="0" value="${Number(b.pagesRead)||0}"></div>
+ <div class="field"><label>Nombre total de pages</label><input id="totalInput" type="number" min="0" value="${Number(b.totalPages)||0}"></div>
+ <div class="field"><label>Note sur 5</label><input id="ratingInput" type="number" min="0" max="5" step="0.5" value="${Number(b.rating)||0}"></div>
+ <div class="field"><label>Souvenir ou avis</label><textarea id="notesInput" placeholder="Ce que cette lecture vous a laissé…">${esc(b.notes||"")}</textarea></div>
+ <div class="actionGrid"><button class="primary" id="saveBook">Enregistrer</button><button class="dangerBtn" id="deleteBook">Supprimer</button></div>
+ </div></section></div>`;
+ document.getElementById("backBtn").onclick=()=>{selectedId=null;render()};
+ document.getElementById("saveBook").onclick=async()=>{
+  b.status=document.getElementById("statusInput").value;b.totalPages=Math.max(0,Number(document.getElementById("totalInput").value)||0);b.pagesRead=Math.max(0,Number(document.getElementById("pagesInput").value)||0);if(b.totalPages)b.pagesRead=Math.min(b.pagesRead,b.totalPages);b.progress=b.status==="Lu"?100:(b.totalPages?Math.round(b.pagesRead/b.totalPages*100):0);b.rating=Math.min(5,Math.max(0,Number(document.getElementById("ratingInput").value)||0));b.notes=document.getElementById("notesInput").value;if(b.status==="Lu"&&b.totalPages)b.pagesRead=b.totalPages;if(await updateRemoteBook(b)){notify("Livre mis à jour");renderDetail()}
+ };
+ document.getElementById("deleteBook").onclick=async()=>{if(confirm(`Supprimer ${b.title} de votre bibliothèque ?`)&&await deleteRemoteBook(b.id)){selectedId=null;notify("Livre supprimé");switchTab("library")}}
+}
+
+
+
+function cleanBiography(text=""){
+ return String(text)
+  .replace(/\(\[Source\]\[\d+\]\)/gi,"")
+  .replace(/\[Source\]\[\d+\]/gi,"")
+  .replace(/^\[\d+\]:.*$/gmi,"")
+  .replace(/https?:\/\/\S+/g,"")
+  .replace(/\*([^*]+)\*/g,"$1")
+  .replace(/\s{2,}/g," ")
+  .trim()
+}
+async function fetchFrenchWikipediaAuthor(name){
+ const headers={Accept:"application/json"};
+ const direct=`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g,"_"))}`;
+ let response=await fetch(direct,{headers});
+ if(response.ok){const data=await response.json();if(data.extract)return data}
+ const searchUrl=`https://fr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name)}&srlimit=1&format=json&origin=*`;
+ response=await fetch(searchUrl,{headers});
+ if(!response.ok)return null;
+ const search=await response.json(),title=search.query&&search.query.search&&search.query.search[0]&&search.query.search[0].title;
+ if(!title)return null;
+ response=await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g,"_"))}`,{headers});
+ if(!response.ok)return null;
+ const data=await response.json();return data.extract?data:null
+}
+async function translateBiographyToFrench(text){
+ const clean=cleanBiography(text).slice(0,4500);
+ if(!clean)return "";
+ const chunks=clean.match(/.{1,480}(?:\s|$)/g)||[clean];
+ const translated=[];
+ for(const chunk of chunks.slice(0,8)){
+   const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk.trim())}&langpair=en|fr`;
+   const res=await fetch(url);
+   if(!res.ok)throw new Error("Traduction indisponible");
+   const data=await res.json();
+   translated.push((data.responseData&&data.responseData.translatedText)||chunk)
+ }
+ return cleanBiography(translated.join(" "))
+}
+function frenchDate(value){if(!value)return "—";return String(value).replace(/^(\d{4})-(\d{2})-(\d{2})$/,"$3/$2/$1")}
+
+async function renderAuthorDetail(){
+ appHeader.classList.add("hidden");appBottom.classList.add("hidden");
+ const owned=library.filter(b=>(b.author||"").toLowerCase()===selectedAuthorName.toLowerCase());
+ appScreen.innerHTML=`<div><div class="detailTop"><button id="authorBack">‹</button><span>CHAPTER</span><button>☆</button></div>
+ <section class="authorAppleHero" id="authorAppleHero"><div class="authorAppleBlur" id="authorAppleBlur"></div><div class="authorAppleContent"><div id="authorPortrait" class="authorPortrait authorPortraitFallback">${authorInitial(selectedAuthorName)}</div><span class="eyebrow">AUTEUR DÉCOUVERT</span><h1>${esc(selectedAuthorName)}</h1><p class="descriptor" id="authorDescriptor">${owned.length} livre${owned.length>1?"s":""} dans votre bibliothèque</p><div class="authorFacts"><div class="authorFact"><strong>Naissance</strong><span id="authorBirth">—</span></div><div class="authorFact"><strong>Décès</strong><span id="authorDeath">—</span></div><div class="authorFact"><strong>Collection</strong><span>${owned.length} livre${owned.length>1?"s":""}</span></div></div></div></section>
+ <section class="card bioApple"><span class="eyebrow">À PROPOS</span><h2>Son histoire</h2><p id="authorBio" class="bioClamp">Recherche de la meilleure biographie française…</p><button id="bioToggle" class="textButton hidden">Lire la suite</button><p class="sourceNote" id="authorSource"></p></section>
+ <section class="card library"><div class="sectionHead"><h2>Dans ma bibliothèque</h2><span>${owned.length}</span></div><div class="bookGrid">${owned.map(tile).join("")}</div></section>
+ <section class="card library"><div class="sectionHead"><h2>Œuvres à découvrir</h2><span>Suggestions</span></div><div class="worksRow" id="authorWorks"><div class="empty">Chargement…</div></div></section></div>`;
+ document.getElementById("authorBack").onclick=()=>{selectedAuthorName=null;selectedAuthorKey=null;render()};
+ bindBookButtons();
+ try{
+   let key=selectedAuthorKey;
+   if(!key){
+     const s=await fetch(`https://openlibrary.org/search/authors.json?q=${encodeURIComponent(selectedAuthorName)}`).then(r=>r.json());
+     key=s.docs&&s.docs[0]&&s.docs[0].key;
+     if(key){selectedAuthorKey=key;for(const b of library){if((b.author||"").toLowerCase()===selectedAuthorName.toLowerCase()&&!b.authorKey){b.authorKey=key;await updateRemoteBook(b)}}}
+   }
+   const wikipediaPromise=fetchFrenchWikipediaAuthor(selectedAuthorName).catch(()=>null);
+   let authorData={},worksData={entries:[]};
+   if(key){
+     [authorData,worksData]=await Promise.all([
+       fetch(`https://openlibrary.org/authors/${key}.json`).then(r=>r.ok?r.json():({})),
+       fetch(`https://openlibrary.org/authors/${key}/works.json?limit=9`).then(r=>r.ok?r.json():({entries:[]}))
+     ]);
+   }
+   document.getElementById("authorBirth").textContent=frenchDate(authorData.birth_date);
+   document.getElementById("authorDeath").textContent=frenchDate(authorData.death_date);
+   const wiki=await wikipediaPromise;
+   let bio="",source="";
+   if(wiki&&wiki.extract){
+     bio=cleanBiography(wiki.extract);source="Biographie française issue de Wikipédia.";
+     if(wiki.description)document.getElementById("authorDescriptor").textContent=wiki.description.charAt(0).toUpperCase()+wiki.description.slice(1);
+     const image=wiki.thumbnail&&wiki.thumbnail.source;
+     if(image){
+       document.getElementById("authorPortrait").outerHTML=`<img id="authorPortrait" class="authorPortrait" src="${esc(image)}" alt="${esc(selectedAuthorName)}">`;
+       document.getElementById("authorAppleBlur").style.backgroundImage=`url("${image.replace(/"/g,"%22")}")`
+     }
+   }else{
+     const raw=typeof authorData.bio==="string"?authorData.bio:(authorData.bio&&authorData.bio.value)||"";
+     if(raw){
+       bio=await translateBiographyToFrench(raw);source="Biographie traduite automatiquement en français depuis Open Library.";
+     }
+   }
+   if(!bio){bio=`${selectedAuthorName} fait partie des auteurs découverts dans votre bibliothèque Chapter. Sa biographie française n’est pas encore disponible, mais ses œuvres restent accessibles ci-dessous.`;source="Présentation générée par Chapter."}
+   const bioEl=document.getElementById("authorBio");bioEl.textContent=bio;
+   document.getElementById("authorSource").textContent=source;
+   if(bio.length>620){
+     const toggle=document.getElementById("bioToggle");toggle.classList.remove("hidden");
+     toggle.onclick=()=>{const closed=bioEl.classList.toggle("bioClamp");toggle.textContent=closed?"Lire la suite":"Réduire"}
+   }
+   const works=(worksData.entries||[]).filter(w=>!owned.some(b=>(b.title||"").toLowerCase()===(w.title||"").toLowerCase())).slice(0,6);
+   document.getElementById("authorWorks").innerHTML=works.length?works.map(w=>`<div class="workMini"><img src="${w.covers&&w.covers[0]?`https://covers.openlibrary.org/b/id/${w.covers[0]}-M.jpg`:"https://placehold.co/180x270/f0ece5/777?text=Chapter"}"><strong>${esc(w.title||"Sans titre")}</strong></div>`).join(""):`<div class="empty">Aucune œuvre supplémentaire trouvée.</div>`;
+ }catch(e){
+   console.error(e);
+   document.getElementById("authorBio").textContent="La biographie française de cet auteur n’est pas disponible pour le moment.";
+   document.getElementById("authorSource").textContent="";
+   document.getElementById("authorWorks").innerHTML=`<div class="empty">Impossible de charger les œuvres.</div>`;
+ }
+}
+
+function renderManual(){
+ appScreen.innerHTML=`<div class="page"><section class="pageTitle"><span class="eyebrow">NOUVEAU</span><h1>Ajouter manuellement</h1><p>Créez votre propre fiche.</p></section>
+ <section class="card detailCard"><div class="formGrid"><div class="field"><label>Titre</label><input id="manualTitle"></div><div class="field"><label>Auteur</label><input id="manualAuthor"></div><div class="field"><label>URL de couverture (facultatif)</label><input id="manualCover"></div><div class="field"><label>Nombre de pages</label><input id="manualPages" type="number" min="0"></div><div class="field"><label>Statut</label><select id="manualStatus"><option>À lire</option><option>En cours</option><option>Lu</option></select></div><button class="primary" id="manualSave">Ajouter à ma bibliothèque</button><button class="secondary" id="manualCancel">Annuler</button></div></section></div>`;
+ document.getElementById("manualCancel").onclick=()=>switchTab("today");
+ document.getElementById("manualSave").onclick=async()=>{const title=document.getElementById("manualTitle").value.trim();if(!title){notify("Le titre est obligatoire");return}const total=Number(document.getElementById("manualPages").value)||0,status=document.getElementById("manualStatus").value;const author=document.getElementById("manualAuthor").value.trim()||"Auteur inconnu";const wasKnown=library.some(x=>(x.author||"").toLowerCase()===author.toLowerCase());const b={id:"temp-"+Date.now(),title,author,authorKey:null,cover:document.getElementById("manualCover").value.trim()||"https://placehold.co/240x360/f0ece5/777?text=Chapter",status,progress:status==="Lu"?100:0,pagesRead:status==="Lu"?total:0,totalPages:total,genre:"Personnel",rating:0,notes:""};library.unshift(b);const saved=await insertRemoteBook(b);if(!saved){library=library.filter(x=>x.id!==b.id);return}notify("Livre ajouté");switchTab("library");if(!wasKnown)setTimeout(()=>showAuthorUnlock(author,null),250)}
+}
+
+function switchTab(name){tab=name;selectedId=null;selectedAuthorName=null;selectedAuthorKey=null;document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));render()}
+function render(){appHeader.classList.toggle("hidden",!!selectedId||!!selectedAuthorName||tab==="manual");appBottom.classList.toggle("hidden",!!selectedId||!!selectedAuthorName||tab==="manual");if(selectedAuthorName)return renderAuthorDetail();if(selectedId)return renderDetail();if(tab==="today")renderToday();if(tab==="explore")renderExplore();if(tab==="library")renderLibrary();if(tab==="profile")renderProfile();if(tab==="manual")renderManual()}
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+document.getElementById("addBtn").onclick=()=>addSheet.classList.remove("hidden");
+addSheet.onclick=e=>{if(e.target===addSheet)addSheet.classList.add("hidden")};
+document.querySelectorAll("[data-add-action]").forEach(b=>b.onclick=()=>{const a=b.dataset.addAction;addSheet.classList.add("hidden");if(a==="search")switchTab("explore");if(a==="manual"){tab="manual";render()}});supabaseClient.auth.onAuthStateChange((event,session)=>setTimeout(()=>handleSession(session),0));(async()=>{const {data}=await supabaseClient.auth.getSession();await handleSession(data.session)})();
+</script>
+</body>
+</html>
